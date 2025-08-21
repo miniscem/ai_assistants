@@ -1,54 +1,74 @@
-# AiAssistants Crew
+# AiAssistants
 
-Welcome to the AiAssistants Crew project, powered by [crewAI](https://crewai.com). This template is designed to help you set up a multi-agent AI system with ease, leveraging the powerful and flexible framework provided by crewAI. Our goal is to enable your agents to collaborate effectively on complex tasks, maximizing their collective intelligence and capabilities.
+> **Purpose:** This repository is for exploring [crewAI](https://crewai.com) and hands-on AI application development with a focus on multi-agent systems. It serves as a sandbox for experimenting with collaborative AI agents, workflows, and automation.
 
-## Installation
+Welcome to the AiAssistants project, powered by [crewAI](https://crewai.com). This project is used to setup multi-agent AI system with ease, leveraging crewAI. The goal of this project is to illustrate working examples of agentic workflows and use cases you can use to automate common tasks performed in your personal life. The goal is to enable your agents to collaborate effectively on complex tasks, maximizing their collective intelligence and capabilities.
 
-Ensure you have Python >=3.10 <3.14 installed on your system. This project uses [UV](https://docs.astral.sh/uv/) for dependency management and package handling, offering a seamless setup and execution experience.
+## 🚀 What is This?
 
-First, if you haven't already, install uv:
+This repository is a series of examples for creating and orchestrating multiple AI agents, each with their own roles and skills. The agents can:
 
-```bash
-pip install uv
-```
+- **Write and edit blog posts**
+- **Research topics and summarize findings**
+- **Automate repetitive personal tasks**
+- **Collaborate to solve complex problems**
 
-Next, navigate to your project directory and install the dependencies:
+All powered by [crewAI](https://crewai.com), making it easy to define, extend, and run your own agent workflows.
 
-(Optional) Lock the dependencies and install them by using the CLI command:
-```bash
-crewai install
-```
-### Customizing
+---
 
-**Add your `OPENAI_API_KEY` into the `.env` file**
+## 🛠️ Quickstart
 
-- Modify `src/ai_assistants/config/agents.yaml` to define your agents
-- Modify `src/ai_assistants/config/tasks.yaml` to define your tasks
-- Modify `src/ai_assistants/crew.py` to add your own logic, tools and specific args
-- Modify `src/ai_assistants/main.py` to add custom inputs for your agents and tasks
+1. **Install Python (>=3.10, <3.14)**
+2. **Install [uv](https://docs.astral.sh/uv/):**
+   ```bash
+   pip install uv
+   ```
+3. **Install dependencies:**
+   ```bash
+   crewai install
+   ```
+4. **Add your `OPENAI_API_KEY` to a `.env` file**
+5. **Run your agents:**
+   ```bash
+   crewai run
+   ```
 
-## Running the Project
+---
 
-To kickstart your crew of AI agents and begin task execution, run this from the root folder of your project:
+## 🧩 How It Works
 
-```bash
-$ crewai run
-```
+- **Agents** are defined in `src/ai_assistants/config/agents.yaml`.
+- **Tasks** are defined in `src/ai_assistants/config/tasks.yaml`.
+- **Logic, tools, and customizations** go in `src/ai_assistants/crew.py` and `src/ai_assistants/main.py`.
 
-This command initializes the ai-assistants Crew, assembling the agents and assigning them tasks as defined in your configuration.
+You can easily add new agents, define new tasks, or plug in your own tools. The default setup includes a blog-writing workflow, but you can extend it to automate anything you want.
 
-This example, unmodified, will run the create a `report.md` file with the output of a research on LLMs in the root folder.
+---
 
-## Understanding Your Crew
+## 🧑‍💻 Why Use This?
 
-The ai-assistants Crew is composed of multiple AI agents, each with unique roles, goals, and tools. These agents collaborate on a series of tasks, defined in `config/tasks.yaml`, leveraging their collective skills to achieve complex objectives. The `config/agents.yaml` file outlines the capabilities and configurations of each agent in your crew.
+- **Save time**: Let AI handle your routine writing and research.
+- **Flexible**: Add, remove, or customize agents and tasks as you wish.
+- **Collaborative**: Agents work together, not in isolation.
+- **Open source & extensible**: Build your own automations on top.
 
-## Support
+---
 
-For support, questions, or feedback regarding the AiAssistants Crew or crewAI.
-- Visit our [documentation](https://docs.crewai.com)
-- Reach out to us through our [GitHub repository](https://github.com/joaomdmoura/crewai)
-- [Join our Discord](https://discord.com/invite/X4JWnZnxPb)
-- [Chat with our docs](https://chatg.pt/DWjSBZn)
+## 📂 Project Structure
 
-Let's create wonders together with the power and simplicity of crewAI.
+- `src/ai_assistants/` – Core logic, agent definitions, and tools
+- `src/ai_assistants/config/` – YAML files for agents and tasks
+
+---
+
+## 🤝 Contributing
+
+Ideas, issues, and pull requests are welcome! If you have a personal automation you want to add, open an issue or PR.
+
+---
+
+## 📚 Resources
+
+- [crewAI Documentation](https://docs.crewai.com)
+- [crewAI GitHub](https://github.com/joaomdmoura/crewai)

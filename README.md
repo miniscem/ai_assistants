@@ -17,18 +17,21 @@ All powered by [crewAI](https://crewai.com), making it easy to define, extend, a
 
 ---
 
-## 🛠️ Quickstart
+## Quickstart
 
-1. **Install Python (>=3.10, <3.14)**
+1. **Install Python 3.12**
 2. **Install [uv](https://docs.astral.sh/uv/):**
    ```bash
-   pip install uv
+   curl -LsSf https://astral.sh/uv/install.sh | sh
    ```
 3. **Install dependencies:**
    ```bash
-   crewai install
+   uv sync
    ```
-4. **Add your `OPENAI_API_KEY` to a `.env` file**
+4. **Add your `ANTHROPIC_API_KEY` to a `.env` file:**
+   ```bash
+   echo "ANTHROPIC_API_KEY=your-api-key-here" > .env
+   ```
 5. **Run your agents:**
    ```bash
    crewai run
@@ -40,7 +43,7 @@ All powered by [crewAI](https://crewai.com), making it easy to define, extend, a
 
 - **Agents** are defined in `src/ai_assistants/config/agents.yaml`.
 - **Tasks** are defined in `src/ai_assistants/config/tasks.yaml`.
-- **Logic, tools, and customizations** go in `src/ai_assistants/crew.py` and `src/ai_assistants/main.py`.
+- **Logic, tools, and customizations** go in `src/ai_assistants/blog_writer_crew.py` and `src/ai_assistants/main.py`.
 
 You can easily add new agents, define new tasks, or plug in your own tools. The default setup includes a blog-writing workflow, but you can extend it to automate anything you want.
 

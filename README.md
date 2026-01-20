@@ -1,77 +1,120 @@
-# AiAssistants
+# AI Assistants
 
-> **Purpose:** This repository is for exploring [crewAI](https://crewai.com) and hands-on AI application development with a focus on multi-agent systems. It serves as a sandbox for experimenting with collaborative AI agents, workflows, and automation.
+> **Purpose:** This repository is for exploring AI application development with a focus on multi-agent systems (CrewAI) and LangGraph-based chatbots. It serves as a sandbox for experimenting with collaborative AI agents, workflows, and automation.
 
-Welcome to the AiAssistants project, powered by [crewAI](https://crewai.com). This project is used to setup multi-agent AI system with ease, leveraging crewAI. The goal of this project is to illustrate working examples of agentic workflows and use cases you can use to automate common tasks performed in your personal life. The goal is to enable your agents to collaborate effectively on complex tasks, maximizing their collective intelligence and capabilities.
+## Features
 
-## 🚀 What is This?
-
-This repository is a series of examples for creating and orchestrating multiple AI agents, each with their own roles and skills. The agents can:
-
-- **Write and edit blog posts**
-- **Research topics and summarize findings**
-- **Automate repetitive personal tasks**
-- **Collaborate to solve complex problems**
-
-All powered by [crewAI](https://crewai.com), making it easy to define, extend, and run your own agent workflows.
+- **Financial Advisor Chatbot** - LangGraph-powered chatbot with RAG and web search
+- **Blog Writer Crew** - Multi-agent content creation pipeline
+- **Extensible Architecture** - Easy to add new crews and capabilities
 
 ---
 
 ## Quickstart
+
+### Prerequisites
 
 1. **Install Python 3.12**
 2. **Install [uv](https://docs.astral.sh/uv/):**
    ```bash
    curl -LsSf https://astral.sh/uv/install.sh | sh
    ```
-3. **Install dependencies:**
-   ```bash
-   uv sync
-   ```
-4. **Add your `ANTHROPIC_API_KEY` to a `.env` file:**
-   ```bash
-   echo "ANTHROPIC_API_KEY=your-api-key-here" > .env
-   ```
-5. **Run your agents:**
-   ```bash
-   crewai run
-   ```
+
+### Installation
+
+```bash
+# Clone and install dependencies
+git clone <repo-url>
+cd ai_assistants
+uv sync
+```
+
+### Configuration
+
+Create a `.env` file with your API keys:
+
+```bash
+ANTHROPIC_API_KEY=your-anthropic-key
+TAVILY_API_KEY=your-tavily-key  # Optional, for web search
+```
+
+### Running the Chatbot
+
+```bash
+chatbot
+```
+
+The FastAPI server starts at `http://localhost:8000`. Try it:
+
+```bash
+curl -X POST http://localhost:8000/api/v1/chat \
+  -H "Content-Type: application/json" \
+  -d '{"message": "What are the basics of investing?"}'
+```
+
+API docs available at `http://localhost:8000/docs`
+
+### Running the Blog Writer Crew
+
+```bash
+blog_writer
+# or
+crewai run
+```
 
 ---
 
-## 🧩 How It Works
+## Project Structure
 
-- **Agents** are defined in `src/ai_assistants/config/agents.yaml`.
-- **Tasks** are defined in `src/ai_assistants/config/tasks.yaml`.
-- **Logic, tools, and customizations** go in `src/ai_assistants/blog_writer_crew.py` and `src/ai_assistants/main.py`.
-
-You can easily add new agents, define new tasks, or plug in your own tools. The default setup includes a blog-writing workflow, but you can extend it to automate anything you want.
-
----
-
-## 🧑‍💻 Why Use This?
-
-- **Save time**: Let AI handle your routine writing and research.
-- **Flexible**: Add, remove, or customize agents and tasks as you wish.
-- **Collaborative**: Agents work together, not in isolation.
-- **Open source & extensible**: Build your own automations on top.
-
----
-
-## 📂 Project Structure
-
-- `src/ai_assistants/` – Core logic, agent definitions, and tools
-- `src/ai_assistants/config/` – YAML files for agents and tasks
-
----
-
-## 🤝 Contributing
-
-Ideas, issues, and pull requests are welcome! If you have a personal automation you want to add, open an issue or PR.
+```
+src/ai_assistants/
+├── shared/                      # Shared utilities
+│   ├── config.py                # Pydantic settings, env loading
+│   └── logging.py               # Centralized logging
+│
+├── chatbot/                     # LangChain/LangGraph + FastAPI
+│   ├── app.py                   # FastAPI app factory
+│   ├── main.py                  # Uvicorn entry point
+│   ├── api/                     # REST API layer
+│   ├── core/                    # LangGraph workflow
+│   ├── tools/                   # Web search, etc.
+│   └── rag/                     # Document retrieval
+│
+└── crews/                       # CrewAI multi-agent systems
+    ├── main.py                  # CLI entry points
+    ├── blog_writer/             # Blog writing crew
+    │   ├── crew.py
+    │   └── config/
+    └── tools/                   # Shared CrewAI tools
+```
 
 ---
 
-## 📚 Resources
+## Available Commands
+
+| Command | Description |
+|---------|-------------|
+| `chatbot` | Start the FastAPI chatbot server |
+| `blog_writer` | Run the blog writer crew |
+| `crewai run` | Run the default crew |
+| `crewai train <n> <file>` | Train crew for n iterations |
+| `crewai replay <task_id>` | Replay from a specific task |
+| `crewai test <n> <llm>` | Test crew with specified LLM |
+
+---
+
+## Adding New Crews
+
+1. Create a new directory under `src/ai_assistants/crews/`
+2. Add `crew.py` with `@CrewBase` decorator
+3. Add `config/agents.yaml` and `config/tasks.yaml`
+4. Add entry point in `crews/main.py`
+5. Register command in `pyproject.toml`
+
+---
+
+## Resources
 
 - [crewAI Documentation](https://docs.crewai.com)
-- [crewAI GitHub](https://github.com/joaomdmoura/crewai)
+- [LangGraph Documentation](https://langchain-ai.github.io/langgraph/)
+- [FastAPI Documentation](https://fastapi.tiangolo.com)

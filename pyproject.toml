@@ -1,19 +1,47 @@
 [project]
 name = "ai_assistants"
 version = "0.1.0"
-description = "ai-assistants using crewAI"
+description = "AI assistants using CrewAI and LangGraph"
 authors = [{ name = "Mark Minisce", email = "miniscem@gmail.com" }]
 requires-python = ">=3.12,<3.13"
 dependencies = [
-    "crewai[tools]>=0.165.1,<1.0.0"
+    # CrewAI
+    "crewai[tools]>=0.165.1,<1.0.0",
+
+    # LangChain/LangGraph
+    "langchain>=0.3",
+    "langchain-anthropic>=0.3",
+    "langgraph>=0.2",
+    "langchain-community>=0.3",
+
+    # FastAPI
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.32",
+
+    # RAG
+    "chromadb>=0.5",
+    "sentence-transformers>=2.0",
+
+    # Web search
+    "tavily-python>=0.4",
+
+    # Shared
+    "pydantic-settings>=2.0",
 ]
 
 [project.scripts]
-ai_assistants = "ai_assistants.main:run"
-run_crew = "ai_assistants.main:run"
-train = "ai_assistants.main:train"
-replay = "ai_assistants.main:replay"
-test = "ai_assistants.main:test"
+# Chatbot
+chatbot = "ai_assistants.chatbot.main:run_server"
+
+# CrewAI - Blog Writer
+blog_writer = "ai_assistants.crews.main:run_blog_writer"
+run_crew = "ai_assistants.crews.main:run_crew"
+train = "ai_assistants.crews.main:train"
+replay = "ai_assistants.crews.main:replay"
+test = "ai_assistants.crews.main:test"
+
+# Legacy alias
+ai_assistants = "ai_assistants.crews.main:run"
 
 [build-system]
 requires = ["hatchling"]

@@ -54,11 +54,11 @@ async def route_query(state: ChatState) -> Dict[str, Any]:
         )
 
         # Parse the response
-        content = response.content
-        if isinstance(content, str):
+        response_content = response.content
+        if isinstance(response_content, str):
             # Try to extract JSON from the response
             try:
-                result = json.loads(content)
+                result = json.loads(response_content)
                 return {
                     "should_search_web": result.get("should_search_web", False),
                     "should_use_rag": result.get("should_use_rag", False),

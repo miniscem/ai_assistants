@@ -2,6 +2,15 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Claude Usage Best Practices
+
+When referencing or answering questions about Claude usage, capabilities, or implementation patterns, always consult and reference:
+- Official Claude developer documentation (docs.anthropic.com)
+- Anthropic GitHub repositories
+- Published best practice guides and cookbook examples
+
+Use these authoritative sources rather than making assumptions about Claude's capabilities or recommended usage patterns.
+
 ## Build and Run Commands
 
 ```bash

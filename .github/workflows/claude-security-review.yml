@@ -1,0 +1,67 @@
+name: Claude Security Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review, reopened]
+    # Target security-sensitive file changes
+    paths:
+      - "**/*.py"
+      - "**/*.js"
+      - "**/*.ts"
+      - "**/*.jsx"
+      - "**/*.tsx"
+      - "**/requirements*.txt"
+      - "**/package*.json"
+      - "**/*.yml"
+      - "**/*.yaml"
+      - "**/Dockerfile"
+      - "**/.env.example"
+
+jobs:
+  claude-security-review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write  # write to post comments
+      issues: read
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for better context
+
+      - name: Run Claude Security Review
+        id: claude-security
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          plugin_marketplaces: 'https://github.com/anthropics/claude-code.git'
+          plugins: 'code-review@claude-code-plugins'
+          prompt: |
+            Review PR ${{ github.repository }}/pull/${{ github.event.pull_request.number }} for security vulnerabilities and issues.
+
+            Focus on:
+            - OWASP Top 10 vulnerabilities (SQL injection, XSS, CSRF, authentication/authorization flaws, etc.)
+            - Secrets or credentials hardcoded in code
+            - Insecure dependencies or outdated packages
+            - Insecure cryptographic practices
+            - Path traversal and file system vulnerabilities
+            - Command injection risks
+            - Improper input validation and sanitization
+            - Insecure API design and rate limiting
+            - Sensitive data exposure in logs or responses
+            - Insecure deserialization
+            - Missing security headers
+            - CORS misconfigurations
+
+            For each issue found:
+            1. Explain the security risk and potential impact
+            2. Provide specific code locations
+            3. Suggest secure alternatives or mitigations
+            4. Rate severity (Critical/High/Medium/Low)
+
+            If no security issues are found, confirm the code follows security best practices.
+          # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
+          # or https://code.claude.com/docs/en/cli-reference for available options

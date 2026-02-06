@@ -19,7 +19,7 @@ from ai_assistants.shared.logging import get_logger
 logger = get_logger(__name__)
 
 
-def get_llm() -> ChatAnthropic:
+def get_anthropic_llm() -> ChatAnthropic:
     """Get the LLM instance."""
     return ChatAnthropic(
         model=settings.chatbot_model,
@@ -29,7 +29,7 @@ def get_llm() -> ChatAnthropic:
 
 async def route_query(state: ChatState) -> Dict[str, Any]:
     """Route the query to determine what tools to use."""
-    llm = get_llm()
+    llm = get_anthropic_llm()
 
     # Get the last user message
     messages = state.get("messages", [])
@@ -44,6 +44,8 @@ async def route_query(state: ChatState) -> Dict[str, Any]:
         user_message = last_message.get("content", "")
     else:
         user_message = getattr(last_message, "content", "")
+        test_message:SystemMessage = SystemMessage(content="test")
+        test_message.content
 
     try:
         response = await llm.ainvoke(
@@ -123,7 +125,7 @@ async def retrieve_context(state: ChatState) -> Dict[str, Any]:
 
 async def generate_response(state: ChatState) -> Dict[str, Any]:
     """Generate the final response."""
-    llm = get_llm()
+    llm = get_anthropic_llm()
 
     messages = state.get("messages", [])
     context = state.get("context")

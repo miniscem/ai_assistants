@@ -4,6 +4,7 @@ import uuid
 from typing import Dict
 
 from fastapi import APIRouter, HTTPException
+from langgraph.graph import StateGraph
 
 from ai_assistants.chatbot.api.schemas import (
     ChatRequest,
@@ -22,7 +23,7 @@ router = APIRouter(prefix="/api/v1", tags=["chat"])
 conversations: Dict[str, list] = {}
 
 # Create the LangGraph workflow
-graph = create_graph()
+graph: StateGraph = create_graph()
 
 
 @router.get("/health", response_model=HealthResponse)

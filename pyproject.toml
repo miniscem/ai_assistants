@@ -2,7 +2,7 @@
 name = "ai_assistants"
 version = "0.1.0"
 description = "AI assistants using CrewAI and LangGraph"
-authors = [{ name = "Mark Minisce", email = "miniscem@gmail.com" }]
+authors = [{ name = "Mark Minisce"}]
 requires-python = ">=3.12,<3.13"
 dependencies = [
     # CrewAI
@@ -25,6 +25,12 @@ dependencies = [
     # Web search
     "tavily-python>=0.4",
 
+    # Embedding utility
+    "azure-search-documents>=11.4",
+    "pymupdf>=1.24",
+    "pytesseract>=0.3",
+    "Pillow>=10.0",
+
     # Shared
     "pydantic-settings>=2.0",
 ]
@@ -39,6 +45,9 @@ run_crew = "ai_assistants.crews.main:run_crew"
 train = "ai_assistants.crews.main:train"
 replay = "ai_assistants.crews.main:replay"
 test = "ai_assistants.crews.main:test"
+
+# Embedding utility
+embed = "ai_assistants.embedding_utility.main:run_embedding_utility"
 
 # Legacy alias
 ai_assistants = "ai_assistants.crews.main:run"

@@ -29,6 +29,15 @@ class Settings(BaseSettings):
     # CrewAI settings
     crew_verbose: bool = True
 
+    # Embedding utility settings
+    azure_search_endpoint: str = ""
+    azure_search_api_key: str = ""
+    azure_search_index_name: str = "document-chunks"
+    embedding_model_name: str = "sentence-transformers/all-MiniLM-L6-v2"
+    embedding_model_cache_dir: str = ""
+    embedding_chunk_size: int = 1000
+    embedding_input_dir: str = "./data/embedding_input"
+
 
 @lru_cache
 def get_settings() -> Settings:

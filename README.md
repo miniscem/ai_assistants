@@ -101,6 +101,15 @@ src/ai_assistants/
 | `crewai replay <task_id>` | Replay from a specific task |
 | `crewai test <n> <llm>` | Test crew with specified LLM |
 
+## Utility Commands
+### Embedding Utility
+```embed --model <model_name> --dry-run --single-file <file_name>```
+
+Options
+* --model (intfloat/e5-large-v2): optional, defaults to sentence-transformers/all-MiniLM-L6-v2
+* --dry-run: option will ensure embeddings are not loaded into vector store. Used for local testing.
+* --single-file: name of the file to take from input directory (data/embedding_input)
+
 ---
 
 ## Adding New Crews

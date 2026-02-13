@@ -58,6 +58,7 @@ def run_pipeline(
     single_file: Path | None = None,
     chunk_size: int | None = None,
     dry_run: bool = False,
+    model_name: str | None = None,
 ) -> PipelineResult:
     """Run the full embedding pipeline.
 
@@ -66,12 +67,14 @@ def run_pipeline(
         single_file: Process only this file instead of scanning a directory.
         chunk_size: Override chunk size from config.
         dry_run: If True, skip Azure upload.
+        model_name: Sentence-transformers model name. Defaults to config value.
 
     Returns:
         PipelineResult with per-file details.
     """
     input_dir = input_dir or get_input_directory()
     chunk_size = chunk_size or settings.embedding_chunk_size
+    effective_model = model_name or settings.embedding_model_name
 
     files = _get_supported_files(input_dir, single_file)
     result = PipelineResult(total_files=len(files))
@@ -80,17 +83,23 @@ def run_pipeline(
         logger.warning("No supported files found in %s", input_dir)
         return result
 
-    # Initialize Azure client and embedding model upfront
+    # Pre-load the embedding model and read its dimensions
+    from ai_assistants.embedding_utility.embeddings.generator import get_model
+    model = get_model(effective_model)
+    embedding_dim = model.get_sentence_embedding_dimension()
+    logger.info(
+        "Using model '%s' with %d-dimensional embeddings",
+        effective_model,
+        embedding_dim,
+    )
+
+    # Initialize Azure client upfront
     azure_client: AzureSearchClient | None = None
     if not dry_run:
         azure_client = AzureSearchClient()
-        azure_client.ensure_index_exists()
+        azure_client.ensure_index_exists(embedding_dim, effective_model)
     else:
         azure_client = None
-
-    # Pre-load the embedding model
-    from ai_assistants.embedding_utility.embeddings.generator import get_model
-    get_model()
 
     for idx, file_path in enumerate(files, 1):
         logger.info("Processing file %d/%d: %s", idx, len(files), file_path.name)
@@ -125,6 +134,7 @@ def run_pipeline(
                         "source_file": file_path.name,
                         "chunk_index": len(all_chunks),
                         "page_number": page.page_number,
+                        "embedding_model": effective_model,
                     })
 
             if not all_chunks:
@@ -137,7 +147,9 @@ def run_pipeline(
 
             # Step 3: Generate embeddings
             texts = [c["content"] for c in all_chunks]
-            embeddings = generate_embeddings(texts)
+            if effective_model == "intfloat/e5-large-v2":
+                texts = [f"passage: {t}" for t in texts]
+            embeddings = generate_embeddings(texts=texts, model_name=effective_model)
             for chunk, embedding in zip(all_chunks, embeddings):
                 chunk["content_vector"] = embedding
 

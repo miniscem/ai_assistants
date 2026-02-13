@@ -41,6 +41,12 @@ def run_embedding_utility() -> None:
         default=None,
         help="Process a single file instead of scanning a directory.",
     )
+    parser.add_argument(
+        "--model",
+        type=str,
+        default=None,
+        help="Sentence-transformers model name (default: from config).",
+    )
 
     args = parser.parse_args()
 
@@ -49,6 +55,7 @@ def run_embedding_utility() -> None:
         single_file=args.single_file,
         chunk_size=args.chunk_size,
         dry_run=args.dry_run,
+        model_name=args.model,
     )
 
     # Print summary

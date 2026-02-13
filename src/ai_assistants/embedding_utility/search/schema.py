@@ -16,7 +16,7 @@ from azure.search.documents.indexes.models import (
 )
 
 
-def create_index_definition(index_name: str) -> SearchIndex:
+def create_index_definition(index_name: str, vector_dimensions: int) -> SearchIndex:
     """Create the Azure AI Search index definition for document chunks."""
     fields = [
         SimpleField(
@@ -33,7 +33,7 @@ def create_index_definition(index_name: str) -> SearchIndex:
             name="content_vector",
             type=SearchFieldDataType.Collection(SearchFieldDataType.Single),
             searchable=True,
-            vector_search_dimensions=384,
+            vector_search_dimensions=vector_dimensions,
             vector_search_profile_name="default-vector-profile",
         ),
         SimpleField(
@@ -53,6 +53,12 @@ def create_index_definition(index_name: str) -> SearchIndex:
             type=SearchFieldDataType.Int32,
             sortable=True,
             filterable=True,
+        ),
+        SimpleField(
+            name="embedding_model",
+            type=SearchFieldDataType.String,
+            filterable=True,
+            facetable=True,
         ),
         SimpleField(
             name="created_at",

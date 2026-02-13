@@ -5,6 +5,7 @@ import logging
 from datetime import datetime, timezone
 
 from azure.core.credentials import AzureKeyCredential
+from azure.core.exceptions import HttpResponseError
 from azure.search.documents import SearchClient
 from azure.search.documents.indexes import SearchIndexClient
 
@@ -43,10 +44,40 @@ class AzureSearchClient:
             credential=self._credential,
         )
 
-    def ensure_index_exists(self) -> None:
-        """Create or update the search index."""
-        index_def = create_index_definition(self.index_name)
-        self._index_client.create_or_update_index(index_def)
+    @staticmethod
+    def _model_suffix(model_name: str) -> str:
+        """Extract a short suffix from a model name (e.g. 'intfloat/e5-large-v2' → 'e5-large-v2')."""
+        return model_name.rsplit("/", 1)[-1]
+
+    def ensure_index_exists(self, vector_dimensions: int, model_name: str = "") -> None:
+        """Create or update the search index.
+
+        If the index already exists with incompatible settings, retries with
+        a model-specific index name (``{index}-{model_suffix}``).
+        """
+        index_def = create_index_definition(self.index_name, vector_dimensions)
+        try:
+            self._index_client.create_or_update_index(index_def)
+        except HttpResponseError as exc:
+            if exc.error and exc.error.code == "OperationNotAllowed" and model_name:
+                suffix = self._model_suffix(model_name)
+                new_name = f"{self.index_name}-{suffix}"
+                logger.warning(
+                    "Index '%s' is incompatible (%s). Retrying with '%s'.",
+                    self.index_name,
+                    exc.message,
+                    new_name,
+                )
+                self.index_name = new_name
+                index_def = create_index_definition(new_name, vector_dimensions)
+                self._index_client.create_or_update_index(index_def)
+                self._search_client = SearchClient(
+                    endpoint=self.endpoint,
+                    index_name=self.index_name,
+                    credential=self._credential,
+                )
+            else:
+                raise
         logger.info("Index '%s' is ready.", self.index_name)
 
     def upload_chunks(
@@ -79,6 +110,7 @@ class AzureSearchClient:
                     "source_file": chunk["source_file"],
                     "chunk_index": chunk["chunk_index"],
                     "page_number": chunk["page_number"],
+                    "embedding_model": chunk.get("embedding_model", ""),
                     "created_at": now,
                 }
                 documents.append(doc)
